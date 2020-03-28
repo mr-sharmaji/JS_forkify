@@ -1,0 +1,36 @@
+{
+  "name": "forkify",
+  "version": "1.0.0",
+  "description": "Forkify Project",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production",
+    "start": "webpack-dev-server --mode development --open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mr-sharmaji/JS_forkify.git"
+  },
+  "author": "Subham Sharma",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mr-sharmaji/JS_forkify/issues"
+  },
+  "homepage": "https://github.com/mr-sharmaji/JS_forkify#readme",
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.1.0",
+    "babel-preset-env": "^1.7.0",
+    "html-webpack-plugin": "^4.0.2",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "jquery": "^3.4.1"
+  }
+}
