@@ -65,16 +65,18 @@ const controlRecipe = async () => {
          * calculate servings and time
          * render recipe
          */
+        recipeView.clearRecipe();
+        renderLoader(DOMelement.recipe)
         state.recipe = new Recipe(id);
         // try{
             await state.recipe.getRecipe();
+            state.recipe.parseIngridients()
             state.recipe.calTime();
             state.recipe.calServings();
-            console.log(state.recipe.ingredients)
-            state.recipe.parseIngridients()
-            console.log(state.recipe)
+            clearLoader();
+            recipeView.renderRecipe(state.recipe);
         // } catch(error) {
-        //     alert('Something Went Wrong :(');
+            //  alert('Something Went Wrong :(');
         // } 
     }
 }
