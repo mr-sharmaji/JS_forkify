@@ -1,4 +1,6 @@
 import Search from './models/Search';
+import Recipe from './models/Recipe'
+import * as recipeView from './views/recipeView'
 import * as searchView from './views/searchView'
 import {DOMelement, renderLoader, clearLoader} from './views/base'
 /** 
@@ -20,14 +22,20 @@ const controlSearch = async () => {
      * render results on UI 
      */
     const query = searchView.getInput();
+    // const query = 'pizza'
     if(query){
         state.search = new Search(query)
         searchView.clearResults();
         searchView.clearInput();
         renderLoader(DOMelement.searchRes)
-        await state.search.getResult();
-        clearLoader();
-        searchView.renderResults(state.search.result)
+        try {
+            await state.search.getResult();
+            searchView.renderResults(state.search.result)
+        } catch {
+            alert('Something Went Wrong :(');
+        } finally {
+            clearLoader();
+        }
     }
 }
 
@@ -35,6 +43,7 @@ DOMelement.searchForm.addEventListener('submit', e => {
     e.preventDefault();
     controlSearch();
 });
+
 
 DOMelement.searchResPages.addEventListener('click', e => {
     const btn = e.target.closest('.btn-inline')
@@ -44,3 +53,31 @@ DOMelement.searchResPages.addEventListener('click', e => {
         searchView.renderResults(state.search.result, gotoPage);
     }
 })
+
+const controlRecipe = async () => {
+    const id = window.location.hash.replace('#', '')
+    console.log(id)
+    if(id) {
+        /**
+         * prepare UI for changes 
+         * create new recipe object
+         * get recipe data and parse ingridients 
+         * calculate servings and time
+         * render recipe
+         */
+        state.recipe = new Recipe(id);
+        // try{
+            await state.recipe.getRecipe();
+            state.recipe.calTime();
+            state.recipe.calServings();
+            console.log(state.recipe.ingredients)
+            state.recipe.parseIngridients()
+            console.log(state.recipe)
+        // } catch(error) {
+        //     alert('Something Went Wrong :(');
+        // } 
+    }
+}
+
+window.addEventListener('hashchange', controlRecipe)
+window.addEventListener('load', controlRecipe)
