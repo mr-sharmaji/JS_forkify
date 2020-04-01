@@ -1,9 +1,11 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe'
 import List from './models/List'
+import Likes from './models/Likes'
 import * as recipeView from './views/recipeView'
 import * as searchView from './views/searchView'
 import * as listView from './views/listView'
+import * as likesView from './views/likesView'
 import {DOMelement, renderLoader, clearLoader} from './views/base'
 /** 
  * Global state of the app
@@ -12,9 +14,7 @@ import {DOMelement, renderLoader, clearLoader} from './views/base'
  * liked recipes
 */
 
-
 const state = {};
-window.state = state;
 
 const controlSearch = async () => {
     /**
@@ -78,7 +78,7 @@ const controlRecipe = async () => {
             state.recipe.calTime();
             state.recipe.calServings();
             clearLoader();
-            recipeView.renderRecipe(state.recipe);
+            recipeView.renderRecipe(state.recipe, state.likes.isLiked(id));
         // } catch(error) {
             //  alert('Something Went Wrong :(');
         // } 
@@ -100,6 +100,8 @@ DOMelement.recipe.addEventListener('click', e=> {
         recipeView.updateServingsIngridients(state.recipe)
     } else if (e.target.matches('.recipe__btn--add, .recipe__btn--add *')){
         controlList();
+    } else if(e.target.matches('.recipe__love, .recipe__love *')) {
+        controlLike();
     }
 })
 
@@ -117,6 +119,41 @@ const controlList = () => {
      
 }
 
+state.likes =  new Likes();
+
+const controlLike = () => {
+    if(!state.likes) state.likes = new Likes();
+    const currentID = state.recipe.id;
+
+    if(!state.likes.isLiked(currentID)) {
+        /**
+         * Add like to the state
+         * toggle the like button
+         * add like to UI list
+         */
+
+         const newLike = state.likes.addLike(
+             currentID,
+             state.recipe.title,
+             state.recipe.author,
+             state.recipe.img
+         )
+        likesView.toggleLikeBtn(true)
+         likesView.renderLike(newLike)
+    } else {
+        state.likes.deleteLike(currentID)
+        likesView.toggleLikeBtn(false)
+        likesView.deleteLike(currentID)
+    }
+    likesView.toggleLikeMenu(state.likes.getNumLikes())
+}
+
+window.addEventListener('load', () => {
+    state.likes = new Likes()
+    state.likes.readStorage()
+    likesView.toggleLikeMenu(state.likes.getNumLikes())
+    state.likes.likes.forEach(like => likesView.renderLike(like))
+})
 /**
  * Handle delete and update list item event
  */
@@ -135,5 +172,5 @@ const controlList = () => {
      } else if (e.target.matches('.shopping__count-value')){
          const val = parseFloat(e.target.value)
          state.list.updateCount(id, val)
-     }
+     } 
  })
