@@ -67,6 +67,15 @@ const renderButton = (page, numResults, resPerPage) => {
     DOMelement.searchResPages.insertAdjacentHTML('afterbegin', button)
 }
 
+export const highlightSelected = (id) => {
+    const resultsArr = Array.from(document.querySelectorAll('.results__link'))
+    resultsArr.forEach(el => {
+        el.classList.remove('results__link--active')
+    })
+
+    document.querySelector(`a[href*="#${id}"]`).classList.add('results__link--active')
+}
+
 export const renderResults = (recipes, page = 1, resPerPage = 10) => {
     const start = Math.round((page - 1) * resPerPage);
     const end = Math.round(page * resPerPage);

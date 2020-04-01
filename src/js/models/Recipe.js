@@ -5,7 +5,7 @@ export default class Recipe {
         this.id = id
     }
     async getRecipe() {
-        try {
+        // try {
             const res = await axios(`${proxy}http://forkify-api.herokuapp.com/api/get?rId=${this.id}`)
             this.title = res.data.recipe.title;
             this.author = res.data.recipe.publisher
@@ -13,9 +13,9 @@ export default class Recipe {
             this.url = res.data.recipe.source_url;
             this.ingredients = res.data.recipe.ingredients;
             return this;
-        } catch (error){
+        // } catch (error){
             alert('Something Went Wrong :(')
-        }
+        // }
     }
 
     calTime() {
@@ -47,7 +47,6 @@ export default class Recipe {
 
              const arrIng = ingridient.split(' ');
              const unitIndex = arrIng.findIndex(el2 => units.includes(el2));
-             console.log(unitIndex)
              let objIng;
              if(unitIndex > -1){
                  /**
@@ -94,5 +93,15 @@ export default class Recipe {
              return objIng;
         });
         this.ingredients = newIngredients
+    }
+
+    updateServings(type) {
+        const newServings = type === 'dec' ? this.servings -1 : this.servings + 1;
+    
+        this.ingredients.forEach (ing => {
+            ing.count *= (newServings/this.servings)
+        })
+
+        this.servings = newServings
     }
 }
